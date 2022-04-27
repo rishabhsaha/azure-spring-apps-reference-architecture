@@ -154,7 +154,9 @@
             "apiVersion": "2020-05-01",
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
-            "dependsOn": [],
+            "dependsOn": [
+                    "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgHubShared'))]"
+            ],
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
