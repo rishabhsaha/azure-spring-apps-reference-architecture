@@ -202,10 +202,10 @@
             ]
         },
         {
-            "name": "[variables('laWorkspaceName')]",
+            "name": "[parameters('laWorkspaceName')]",
             "type": "Microsoft.OperationalInsights/workspaces",
-            "apiVersion": "[variables('laApiVersion')]",
-            "location": "[variables('location')]",
+            "apiVersion": "2015-11-01-preview",
+            "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
             "properties": {
                 "sku": {
