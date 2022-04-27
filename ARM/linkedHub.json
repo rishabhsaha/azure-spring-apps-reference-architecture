@@ -316,10 +316,7 @@
                 //"[concat('Microsoft.Network/virtualNetworks/', parameters('hubVnetName'),'/virtualNetworkPeerings/',parameters('hubToSpokePeeringName'))]",
                 "[concat('Microsoft.Network/privateDnsZones/',variables('keyVaultPrivateDnsZone'),'/virtualNetworkLinks/',variables('keyVaultPrivateZoneLinkName'))]",
                 "[concat('Microsoft.Network/privateDnsZones/',variables('appPrivateDnsZone'),'/virtualNetworkLinks/',variables('appPrivateZoneLinkName'))]"
-            ],
-            "zones": [
-                "1"
-            ],
+            ],            
             "properties": {
                 "networkRuleCollections": [
                     {
