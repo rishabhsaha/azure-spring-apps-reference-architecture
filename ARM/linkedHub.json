@@ -201,7 +201,9 @@
             "apiVersion": "2018-09-01",
             "name": "[concat(variables('keyVaultPrivateDnsZone'), '/', variables('keyVaultPrivateZoneLinkName'))]",
             "location": "global",
-            "dependsOn": [],
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/privateDnsZones', variables('keyVaultPrivateDnsZone') )]"  
+            ],
             "properties": {
                 "registrationEnabled": false,
                 "virtualNetwork": {
@@ -220,7 +222,8 @@
             "apiVersion": "2018-09-01",
             "name": "[concat(variables('msSqlPrivateDnsZone'), '/', variables('msSqlPrivateZoneLinkName'))]",
             "location": "global",
-            "dependsOn": [            
+            "dependsOn": [  
+                "[resourceId('Microsoft.Network/privateDnsZones', variables('msSqlPrivateDnsZone') )]"        
             ],
             "properties": {
                 "registrationEnabled": false,
@@ -242,8 +245,8 @@
             "name": "[concat(variables('appPrivateDnsZone'), '/', variables('appPrivateZoneLinkName'))]",
             "location": "global",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/privateDnsZones', variables('appPrivateDnsZone') )]",
-                "[concat('Microsoft.Network/privateDnsZones/',variables('keyVaultPrivateDnsZone'),'/virtualNetworkLinks/',variables('keyVaultPrivateZoneLinkName'))]"
+                "[resourceId('Microsoft.Network/privateDnsZones', variables('appPrivateDnsZone') )]"
+                
             ],
             "properties": {
                 "registrationEnabled": false,
