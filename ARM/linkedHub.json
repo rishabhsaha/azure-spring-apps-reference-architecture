@@ -84,10 +84,9 @@
     "variables": {
         "ddosStandardProtection": false,
         "logAnalyticsRetention": 30,
-        "nsgHubShared": "nsg-hubshared",
         "appPrivateDnsZone": "private.azuremicroservices.io",
         "keyVaultPrivateDnsZone": "privatelink.vaultcore.azure.net",
-        "msSqlPrivateDnsZone": "privatelink.mysql.database.azure.com",
+        "msSqlPrivateDnsZone": "private.mysql.database.azure.com",
         "postgreSqlPrivateDnsZone" : "private.postgres.database.azure.com",
         "appPrivateZoneLinkName": "[concat(variables('appPrivateDnsZone'), '-link')]",
         "keyVaultPrivateZoneLinkName": "[concat(variables('keyVaultPrivateDnsZone'), '-link')]",
