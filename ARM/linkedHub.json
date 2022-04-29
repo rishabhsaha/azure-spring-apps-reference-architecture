@@ -88,9 +88,11 @@
         "appPrivateDnsZone": "private.azuremicroservices.io",
         "keyVaultPrivateDnsZone": "privatelink.vaultcore.azure.net",
         "msSqlPrivateDnsZone": "privatelink.mysql.database.azure.com",
+        "postgreSqlPrivateDnsZone" : "private.postgres.database.azure.com",
         "appPrivateZoneLinkName": "[concat(variables('appPrivateDnsZone'), '-link')]",
         "keyVaultPrivateZoneLinkName": "[concat(variables('keyVaultPrivateDnsZone'), '-link')]",
-        "msSqlPrivateZoneLinkName": "[concat(variables('msSqlPrivateDnsZone'), '-link')]"
+        "msSqlPrivateZoneLinkName": "[concat(variables('msSqlPrivateDnsZone'), '-link')]",
+        "postgreSqlPrivateZoneLinkName": "[concat(variables('postgreSqlPrivateDnsZone'), '-link')]"
         
     },
     "resources": [
@@ -237,16 +239,35 @@
             "apiVersion": "2018-09-01",
             "name": "[variables('appPrivateDnsZone')]",
             "location": "global"
-        },
-        
+        },        
         {
             "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
             "apiVersion": "2018-09-01",
             "name": "[concat(variables('appPrivateDnsZone'), '/', variables('appPrivateZoneLinkName'))]",
             "location": "global",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/privateDnsZones', variables('appPrivateDnsZone') )]"
-                
+                "[resourceId('Microsoft.Network/privateDnsZones', variables('appPrivateDnsZone') )]"                
+            ],
+            "properties": {
+                "registrationEnabled": false,
+                "virtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('hubVnetName'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/privateDnsZones",
+            "apiVersion": "2018-09-01",
+            "name": "[variables('postgreSqlPrivateDnsZone')]",
+            "location": "global"
+        },
+        {
+            "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+            "apiVersion": "2018-09-01",
+            "name": "[concat(variables('postgreSqlPrivateDnsZone'), '/', variables('postgreSqlPrivateZoneLinkName'))]",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/privateDnsZones', variables('postgreSqlPrivateDnsZone') )]"                
             ],
             "properties": {
                 "registrationEnabled": false,
