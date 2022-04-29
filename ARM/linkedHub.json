@@ -70,7 +70,16 @@
         },
         "appGatewaySubnetName":{
             "type": "string"
-        }                     
+        },
+        "nsgHubShared":{
+            "type": "string"
+        },
+        "hubRouteTable":{
+            "type": "string"
+        },
+        "deployRouteAssign":{
+            "type": "string"
+        }                                       
     },
     "variables": {
         "ddosStandardProtection": false,
@@ -87,7 +96,7 @@
     "resources": [
         {
             "type": "Microsoft.Network/networkSecurityGroups",
-            "name": "[variables('nsgHubShared')]",
+            "name": "[parameters('nsgHubShared')]",
             "apiVersion": "2020-05-01",
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
@@ -102,7 +111,7 @@
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
             "dependsOn": [
-                    "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgHubShared'))]"
+                    "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgHubShared'))]"
             ],
             "properties": {
                 "addressSpace": {
@@ -134,7 +143,7 @@
                         "properties": {
                             "addressPrefix": "[parameters('hubSharedServicesCidr')]",
                             "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgHubShared'))]"
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgHubShared'))]"
                             }
                         }
                     },
@@ -796,6 +805,63 @@
                         }
                     }
                 ]
+            }
+        },
+        {
+            "name": "[parameters('hubRouteTable')]",
+            "type": "Microsoft.Network/routeTables",
+            "apiVersion": "2020-05-01",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tags')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/azureFirewalls/',parameters('azureFirewallName'))]"
+            ],
+            "properties": {
+                "routes": [
+                    {
+                        "name": "udr-default",
+                        "properties": {
+                            "addressPrefix": "0.0.0.0/0",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "[reference(parameters('azureFirewallName')).ipConfigurations[0].properties.privateIPAddress]"
+                        }
+                    }
+                ],
+                "disableBgpRoutePropagation": false
+            },
+            "resources": [
+            ]
+        },        
+        {
+            "name": "[parameters('deployRouteAssign')]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "dependsOn": [
+                
+                "[concat('Microsoft.Network/routeTables/', parameters('hubRouteTable'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "name": "[concat(parameters('hubVnetName'),'/',parameters('sharedServicesSubnetName'))]",
+                            "type": "Microsoft.Network/virtualNetworks/subnets",
+                            "apiVersion": "2020-05-01",
+                            "properties": {
+                                "addressPrefix": "[parameters('hubSharedServicesCidr')]",
+                                "routeTable": {
+                                    "id": "[resourceId('Microsoft.Network/routeTables',parameters('hubRouteTable'))]"
+                                },
+                                "networkSecurityGroup": {
+                                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgHubShared'))]"
+                                }
+                            }
+                        }
+                    ]
+                }
             }
         }
         
