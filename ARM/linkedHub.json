@@ -870,5 +870,9 @@
         
     ],
     "outputs": {
+        "FWIP": {
+        "type": "string",
+        "value": "[reference(parameters('azureFirewallName')).ipConfigurations[0].properties.privateIPAddress]"
+  }
     }
 }
