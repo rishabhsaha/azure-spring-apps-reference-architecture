@@ -86,11 +86,11 @@
         "logAnalyticsRetention": 30,
         "appPrivateDnsZone": "private.azuremicroservices.io",
         "keyVaultPrivateDnsZone": "privatelink.vaultcore.azure.net",
-        "msSqlPrivateDnsZone": "private.mysql.database.azure.com",
+        "mySqlPrivateDnsZone": "private.mysql.database.azure.com",
         "postgreSqlPrivateDnsZone" : "private.postgres.database.azure.com",
         "appPrivateZoneLinkName": "[concat(variables('appPrivateDnsZone'), '-link')]",
         "keyVaultPrivateZoneLinkName": "[concat(variables('keyVaultPrivateDnsZone'), '-link')]",
-        "msSqlPrivateZoneLinkName": "[concat(variables('msSqlPrivateDnsZone'), '-link')]",
+        "mySqlPrivateZoneLinkName": "[concat(variables('mySqlPrivateDnsZone'), '-link')]",
         "postgreSqlPrivateZoneLinkName": "[concat(variables('postgreSqlPrivateDnsZone'), '-link')]"
         
     },
@@ -215,16 +215,16 @@
         {
             "type": "Microsoft.Network/privateDnsZones",
             "apiVersion": "2018-09-01",
-            "name": "[variables('msSqlPrivateDnsZone')]",
+            "name": "[variables('mySqlPrivateDnsZone')]",
             "location": "global"
         },
         {
             "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
             "apiVersion": "2018-09-01",
-            "name": "[concat(variables('msSqlPrivateDnsZone'), '/', variables('msSqlPrivateZoneLinkName'))]",
+            "name": "[concat(variables('mySqlPrivateDnsZone'), '/', variables('mySqlPrivateZoneLinkName'))]",
             "location": "global",
             "dependsOn": [  
-                "[resourceId('Microsoft.Network/privateDnsZones', variables('msSqlPrivateDnsZone') )]"        
+                "[resourceId('Microsoft.Network/privateDnsZones', variables('mySqlPrivateDnsZone') )]"        
             ],
             "properties": {
                 "registrationEnabled": false,
