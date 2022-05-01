@@ -29,21 +29,13 @@
         "hubVnetName":{
             "type": "string"
         },
-        "spokeRGName":{
-            "type": "string"
-        },
-        "spokeVnetName":{
-            "type": "string"
-        },
+        
          "spokeAppSubnetCidr":{
             "type": "string"
         },
          "spokeRuntimeSubnetCidr":{
             "type": "string"
-        },
-        "hubToSpokePeeringName":{
-            "type": "string"
-        },
+        },       
         "bastionPublicIpName":{
             "type": "string"
         },
@@ -159,24 +151,6 @@
             },
             "resources": [
             ]
-        },
-        {
-            "name": "[concat(parameters('hubVnetName'),'/',parameters('hubToSpokePeeringName'))]",
-            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-            "apiVersion": "2020-05-01",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/virtualNetworks/', parameters('hubVnetName'))]"
-                
-            ],
-            "properties": {
-                "allowVirtualNetworkAccess": true,
-                "allowForwardedTraffic": true,
-                "allowGatewayTransit": false,
-                "remoteVirtualNetwork": {
-                    "id": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',parameters('spokeRGName'),'/providers/Microsoft.Network/virtualNetworks/',parameters('spokeVnetName'))]"
-                }
-            }
         },
         {
             "name": "[parameters('laWorkspaceName')]",
