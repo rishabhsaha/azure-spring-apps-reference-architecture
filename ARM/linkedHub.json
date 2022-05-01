@@ -870,7 +870,7 @@
         },
         "laWorkspaceID": {
             "type": "string",
-            "value": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('laWorkspaceName'))]"
+            "value": "[resourceId('Microsoft.Operationalinsights/workspaces', parameters('laWorkspaceName'))]"
         }
     }
 }
