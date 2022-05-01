@@ -865,8 +865,12 @@
     ],
     "outputs": {
         "FWIP": {
-        "type": "string",
-        "value": "[reference(parameters('azureFirewallName')).ipConfigurations[0].properties.privateIPAddress]"
-  }
+            "type": "string",
+            "value": "[reference(parameters('azureFirewallName')).ipConfigurations[0].properties.privateIPAddress]"
+        },
+        "laWorkspaceID": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('laWorkspaceName')))]"
+        }
     }
 }
