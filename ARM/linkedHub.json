@@ -80,10 +80,12 @@
         "keyVaultPrivateDnsZone": "privatelink.vaultcore.azure.net",
         "mySqlPrivateDnsZone": "private.mysql.database.azure.com",
         "postgreSqlPrivateDnsZone" : "private.postgres.database.azure.com",
+        "redisPrivateDnsZone": "privatelink.redis.cache.windows.net",
         "appPrivateZoneLinkName": "[concat(variables('appPrivateDnsZone'), '-link')]",
         "keyVaultPrivateZoneLinkName": "[concat(variables('keyVaultPrivateDnsZone'), '-link')]",
         "mySqlPrivateZoneLinkName": "[concat(variables('mySqlPrivateDnsZone'), '-link')]",
-        "postgreSqlPrivateZoneLinkName": "[concat(variables('postgreSqlPrivateDnsZone'), '-link')]"
+        "postgreSqlPrivateZoneLinkName": "[concat(variables('postgreSqlPrivateDnsZone'), '-link')]",
+        "redisPrivateZoneLinkName": "[concat(variables('redisPrivateDnsZone'),'-link')]"
         
     },
     "resources": [
@@ -237,10 +239,31 @@
         {
             "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
             "apiVersion": "2018-09-01",
-            "name": "[concat(variables('postgreSqlPrivateDnsZone'), '/', variables('postgreSqlPrivateZoneLinkName'))]",
+            "name": "[concat(variables('redisPrivateDnsZone'), '/', variables('postgreSQLPrivateZoneLinkName'))]",
             "location": "global",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/privateDnsZones', variables('postgreSqlPrivateDnsZone') )]"                
+            ],
+            "properties": {
+                "registrationEnabled": false,
+                "virtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('hubVnetName'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/privateDnsZones",
+            "apiVersion": "2018-09-01",
+            "name": "[variables('redisPrivateDnsZone')]",
+            "location": "global"
+        },        
+        {
+            "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+            "apiVersion": "2018-09-01",
+            "name": "[concat(variables('redisPrivateDnsZone'), '/', variables('redisPrivateZoneLinkName'))]",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/privateDnsZones', variables('redisPrivateDnsZone') )]"                
             ],
             "properties": {
                 "registrationEnabled": false,
@@ -282,9 +305,7 @@
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
             "dependsOn": [
-                "[concat('Microsoft.Network/publicIpAddresses/', parameters('azFirewallPublicIpName'))]",
-                //"[concat('Microsoft.Network/virtualNetworks/', parameters('spokeVnetName'),'/virtualNetworkPeerings/',variables('spokeToHubPeeringName'))]",
-                //"[concat('Microsoft.Network/virtualNetworks/', parameters('hubVnetName'),'/virtualNetworkPeerings/',parameters('hubToSpokePeeringName'))]",
+                "[concat('Microsoft.Network/publicIpAddresses/', parameters('azFirewallPublicIpName'))]",                
                 "[concat('Microsoft.Network/privateDnsZones/',variables('keyVaultPrivateDnsZone'),'/virtualNetworkLinks/',variables('keyVaultPrivateZoneLinkName'))]",
                 "[concat('Microsoft.Network/privateDnsZones/',variables('appPrivateDnsZone'),'/virtualNetworkLinks/',variables('appPrivateZoneLinkName'))]"
             ],            
@@ -872,5 +893,6 @@
             "type": "string",
             "value": "[resourceId('Microsoft.Operationalinsights/workspaces', parameters('laWorkspaceName'))]"
         }
+
     }
 }
