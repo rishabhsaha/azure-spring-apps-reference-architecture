@@ -1,0 +1,171 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "tags": {
+            "type": "object"            
+        },
+        "location":{
+            "type": "string"
+        },
+        "hubRGName":{
+            "type": "string"
+        },             
+        "springCloudInstanceName":{
+            "type": "string"
+        },
+        "springCloudServiceCidrs":{
+            "type": "string"
+        },
+        "spokeVnetName":{
+            "type": "string"
+        },
+        "runtimeSubnetName":{
+            "type": "string"
+        },
+        "appSubnetName":{
+            "type": "string"
+        },
+        "appInsightsName":{
+            "type": "string"
+        },
+        "laWorkspaceName":{
+            "type": "string"
+        }
+                                               
+    },
+    "variables": {        
+        
+    },
+    "resources": [
+        {
+            "name": "[parameters('springCloudInstanceName')]",
+            "type": "Microsoft.AppPlatform/Spring",
+            "location": "[parameters('location')]",            
+            "tags": "[parameters('tags')]",
+            "apiVersion": "2022-03-01-preview",
+            "sku": {
+                "name": "E0",
+                "tier": "Enterprise"
+            },
+            "properties": {
+                "zoneRedundant": false,
+                "networkProfile": {
+                    "serviceCidr": "[parameters('springCloudServiceCidrs')]",
+                    "serviceRuntimeSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('spokeVnetName'), parameters('runtimeSubnetName'))]",
+                    "appSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('spokeVnetName'), parameters('appSubnetName'))]"
+                                
+                }
+            },
+            "dependsOn": [],
+            "resources": [
+                {
+                    "type": "serviceRegistries",
+                    "name": "default",
+                    "apiVersion": "2022-03-01-preview",
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.AppPlatform/Spring', parameters('springCloudInstanceName'))]"
+                    ]
+                },
+                {
+                    "type": "configurationServices",
+                    "name": "default",
+                    "apiVersion": "2022-03-01-preview",
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.AppPlatform/Spring', parameters('springCloudInstanceName'))]"
+                    ]
+                },
+                {
+                    "type": "gateways",
+                    "name": "default",
+                    "apiVersion": "2022-03-01-preview",
+                    "location": "[parameters('location')]",
+                    "sku": {
+                        "name": "E0",
+                        "tier": "Enterprise",
+                        "capacity": 2
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.AppPlatform/Spring', parameters('springCloudInstanceName'))]"
+                    ]
+                },
+                {
+                    "type": "apiPortals",
+                    "name": "default",
+                    "apiVersion": "2022-03-01-preview",
+                    "location": "[parameters('location')]",
+                    "sku": {
+                        "name": "E0",
+                        "tier": "Enterprise",
+                        "capacity": 1
+                    },
+                    "properties": {
+                        "gatewayIds": [
+                            "[concat(resourceId('Microsoft.AppPlatform/Spring', parameters('springCloudInstanceName')), '/gateways/default')]"
+                        ]
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.AppPlatform/Spring', parameters('springCloudInstanceName'))]"
+                    ]
+                },
+                {
+                    "type": "Microsoft.AppPlatform/Spring/buildServices/agentPools",
+                    "name": "[concat(parameters('springCloudInstanceName'), '/default/default')]",
+                    "apiVersion": "2022-03-01-preview",
+                    "location": "[parameters('location')]",
+                    "properties": {
+                        "poolSize": {
+                            "name": "S1"
+                        }
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.AppPlatform/Spring', parameters('springCloudInstanceName'))]"
+                    ]
+                }
+            ]
+        },
+        {
+            "apiVersion": "2022-03-01-preview",
+            "name": "[concat(parameters('springCloudInstanceName'), '/default/default/default')]",
+            "type": "Microsoft.AppPlatform/Spring/buildservices/builders/buildpackBindings",            
+            "properties": {
+                "bindingType": "ApplicationInsights",
+                "launchProperties": {
+                    "properties": {
+                        "sampling_percentage": 10,
+                        "connection_string": "[reference(concat('microsoft.insights/components/', parameters('appInsightsName')), '2015-05-01').ConnectionString]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.AppPlatform/Spring', parameters('springCloudInstanceName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.AppPlatform/Spring/providers/diagnosticSettings",
+            "name": "[concat(parameters('springCloudInstanceName'), '/Microsoft.Insights/monitoring')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.AppPlatform/Spring', parameters('springCloudInstanceName'))]"
+            ],
+            "apiVersion": "2017-05-01-preview",
+            "properties": {
+                "name": "monitoring",
+                "workspaceId": "[resourceId(parameters('hubRGName'),'Microsoft.OperationalInsights/workspaces',parameters('laWorkspaceName'))]",
+                "logs": [
+                    {
+                        "category": "ApplicationConsole",
+                        "enabled": true,
+                        "retentionPolicy": {
+                            "days": 30,
+                            "enabled": false
+                        }
+                        
+                    }
+                ]
+            }
+        }       
+    ],
+    "outputs": {}
+}
