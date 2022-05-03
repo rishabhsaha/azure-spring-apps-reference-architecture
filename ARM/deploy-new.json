@@ -851,18 +851,11 @@
                     },
                     "adminPassword": {
                         "value": "[parameters('vmAdminPassword')]"
-                    },
-                    "myWorkspaceId": {
-                        "value": "[reference(resourceId(parameters('hubRGName'),'Microsoft.OperationalInsights/workspaces',variables('laWorkspaceName')), '2015-03-20').customerId]"
-                    },
-                    "myWorkspaceKey": {
-                        "value": "[listKeys(resourceId(parameters('hubRGName'),'Microsoft.OperationalInsights/workspaces',variables('laWorkspaceName')), '2015-03-20').primarySharedKey]"
                     }
+                    
                 },
                 "templateLink": {
-
-                    "uri": "https://raw.githubusercontent.com/Azure/azure-spring-cloud-reference-architecture/main/ARM/resources/deploy-vm-2019.json",
-
+                    "uri": "https://raw.githubusercontent.com/Azure/azure-spring-cloud-reference-architecture/arm-testing/ARM/linkedVM.json",
                     "contentVersion": "1.0.0.0"
                 }
             }

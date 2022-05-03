@@ -58,19 +58,7 @@
             "metadata": {
                 "description": "The password for the administrator account created on the VM"
             }
-        },
-        "myWorkspaceId": {
-            "type": "string",
-            "metadata": {
-                "description": "The Log and Analytics workspace ID that the Microsoft Monitoring Agent will deliver metrics and logs to"
-            }
-        },
-        "myWorkspaceKey": {
-            "type": "string",
-            "metadata": {
-                "description": "The Log and Analytics workspace secret"
-            }
-        },
+        },        
         "availabilityZone": {
             "type": "int",
             "defaultValue": 1,
@@ -91,8 +79,6 @@
         }
     },
     "variables": {
-        "networkApiVersion": "2019-11-01",
-        "vmApiVersion": "2020-06-01",
         "location": "[resourceGroup().location]",
         "nicName": "[concat(parameters('vmName'),parameters('uniqueData'))]",
         "subnetRef": "[resourceId(parameters('vnetSubscriptionId'),parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets',parameters('vnetName'),parameters('subnetName'))]"
@@ -101,7 +87,7 @@
         {
             "name": "[variables('nicName')]",
             "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "[variables('networkApiVersion')]",
+            "apiVersion": "2019-11-01",
             "location": "[variables('location')]",
             "tags": "[parameters('tagValues')]",
             "properties": {
@@ -120,7 +106,7 @@
         {
             "name": "[parameters('vmName')]",
             "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "[variables('vmApiVersion')]",
+            "apiVersion": "2020-06-01",
             "location": "[variables('location')]",
             "tags": "[parameters('tagValues')]",
             "zones": [
@@ -169,43 +155,8 @@
                     }
                 }
             },
-            "resources": [
-                {
-                    "type": "extensions",
-                    "name": "OMSExtension",
-                    "apiVersion": "[variables('vmApiVersion')]",
-                    "location": "[variables('location')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
-                    ],
-                    "properties": {
-                        "publisher": "Microsoft.EnterpriseCloud.Monitoring",
-                        "type": "MicrosoftMonitoringAgent",
-                        "typeHandlerVersion": "1.0",
-                        "autoUpgradeMinorVersion": true,
-                        "settings": {
-                            "workspaceId": "[parameters('myWorkspaceId')]"
-                        },
-                        "protectedSettings": {
-                            "workspaceKey": "[parameters('myWorkspaceKey')]"
-                        }
-                    }
-                },
-                {
-                    "type": "extensions",
-                    "name": "Microsoft.Azure.NetworkWatcher",
-                    "apiVersion": "[variables('vmApiVersion')]",
-                    "location": "[variables('location')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
-                    ],
-                    "properties": {
-                        "publisher": "Microsoft.Azure.NetworkWatcher",
-                        "type": "NetworkWatcherAgentWindows",
-                        "typeHandlerVersion": "1.4",
-                        "autoUpgradeMinorVersion": true
-                    }
-                },
+            "resources": [ 
+                
                 {
                     "type": "extensions",
                     "name": "Microsoft.Azure.customScriptVmExt",
