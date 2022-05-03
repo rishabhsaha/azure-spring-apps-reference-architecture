@@ -70,30 +70,7 @@
             "dependsOn": [
                 "[resourceId('Microsoft.AppPlatform/Spring', parameters('springCloudInstanceName'))]"
             ]
-        },
-        {
-            "type": "Microsoft.AppPlatform/Spring/providers/diagnosticSettings",
-            "name": "[concat(parameters('springCloudInstanceName'), '/Microsoft.Insights/monitoring')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.AppPlatform/Spring', parameters('springCloudInstanceName'))]"
-            ],
-            "apiVersion": "2017-05-01-preview",
-            "properties": {
-                "name": "monitoring",
-                "workspaceId": "[resourceId(parameters('hubRGName'),'Microsoft.OperationalInsights/workspaces',parameters('laWorkspaceName'))]",
-                "logs": [
-                    {
-                        "category": "ApplicationConsole",
-                        "enabled": true,
-                        "retentionPolicy": {
-                            "days": 30,
-                            "enabled": false
-                        }
-                        
-                    }
-                ]
-            }
-        }       
+        }
     ],
     "outputs": {}
 }
