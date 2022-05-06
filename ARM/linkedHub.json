@@ -900,6 +900,10 @@
         "postgreSqlPrivateDnsZoneID": {
             "type": "string",
             "value": "[resourceId('Microsoft.Network/privateDnsZones', variables('postgreSqlPrivateDnsZone'))]"
-        }        
+        },
+        "redisPrivateDnsZoneID": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/privateDnsZones', variables('redisPrivateDnsZone'))]"
+        }           
     }
 }
