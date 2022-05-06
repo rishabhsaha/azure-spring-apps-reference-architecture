@@ -892,7 +892,14 @@
         "laWorkspaceID": {
             "type": "string",
             "value": "[resourceId('Microsoft.Operationalinsights/workspaces', parameters('laWorkspaceName'))]"
-        }
-
+        },        
+        "mySqlPrivateDnsZoneID": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/privateDnsZones', variables('mySqlPrivateDnsZone'))]"
+        },
+        "postgreSqlPrivateDnsZoneID": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/privateDnsZones', variables('postgreSqlPrivateDnsZone'))]"
+        }        
     }
 }
