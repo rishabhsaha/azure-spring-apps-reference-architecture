@@ -788,9 +788,6 @@
                     "location": {
                         "value": "[variables('location')]"
                     },
-                    "hubRGName": {
-                        "value": "[parameters('hubRGName')]"
-                    },
                     "springCloudInstanceName": {
                         "value": "[variables('springCloudInstanceName')]"
                     },
@@ -808,10 +805,7 @@
                     },
                     "appInsightsName": {
                         "value": "[variables('appInsightsName')]"
-                    },
-                    "laWorkspaceName": {
-                        "value": "[variables('laWorkspaceName')]"
-                    }               
+                    }          
                     
                 },
                 "templateLink": {
