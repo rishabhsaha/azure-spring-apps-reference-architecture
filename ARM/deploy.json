@@ -636,7 +636,6 @@
             "properties": {
                 "administratorLogin": "[parameters('vmAdminUsername')]",
                 "administratorLoginPassword": "[parameters('vmAdminPassword')]",
-                "availabilityZone": "1",
                 "backup": {
                     "backupRetentionDays": 7,
                     "geoRedundantBackup": "disabled"
@@ -688,7 +687,6 @@
                     "backupRetentionDays": 7,
                     "geoRedundantBackup": "Disabled"
                 },
-                "availabilityZone": "1",
                 "highAvailability": {
                     "mode": "Disabled"
                 }
