@@ -63,7 +63,7 @@ The [Azure Security Benchmark](https://learn.microsoft.com/en-us/azure/governanc
 
 ### Design Recommendations
 #### 1. Azure Policy Regulatory Compliance Controls for Azure Spring Apps
-Azure Spring Apps is the new name for the Azure Spring App service. Although the service has a new name, you'll see the old name in some places for a while as we work to update assets such as screenshots, videos, and diagrams.
+Although the Azure Spring Cloud service has a new name, you'll see the old name in some places for a while as we work to update assets such as screenshots, videos, and diagrams.
 
 [Regulatory Compliance in Azure Policy](https://learn.microsoft.com/en-us/azure/governance/policy/concepts/regulatory-compliance) provides Microsoft created and managed initiative definitions, known as built-ins, for the compliance domains and security controls related to different compliance standards. This page lists the compliance domains and security controls for Azure Spring Apps. You can assign the built-ins for a security control individually to help make your Azure resources compliant with the specific standard.
 
